@@ -6,6 +6,7 @@ from app.db import db
 from config.config import Config
 from dotenv import load_dotenv
 from app.routes.auth_routes import auth_bp
+from app.routes.organization_routes import organization_bp
 import os
 
 def create_app():
@@ -22,4 +23,5 @@ def create_app():
         db.create_all()
 
     app.register_blueprint(auth_bp)
+    app.register_blueprint(organization_bp)
     return app
