@@ -1,81 +1,72 @@
 # Identity Management API
 
-A secure and modular Identity Management RESTful API built with Flask using Object-Oriented Programming (OOP) and layered architecture principles.
+A full-featured identity management system built with Flask, supporting user authentication, organization management, role-based access control, invitations, and user-role assignments.
 
-## 🚀 Features
+## Features
 
-- User, Role, and Organization management
-- Invitation workflow to onboard users to organizations
-- JWT-based authentication and authorization
-- Role-based access control
-- Layered architecture: Models, Repositories, Services, Controllers
-- PostgreSQL as the database backend
-- Postman for API testing
+- **User Authentication**: Register and login with JWT-based authentication.
+- **Organization Management**: Create, read, update, and delete organizations.
+- **Role Management**: Define roles and assign them to users within organizations.
+- **User-Organization-Role Assignment**: Assign roles to users in specific organizations.
+- **Invitation Flow**: Invite users to organizations with specific roles and allow them to accept invitations.
+- **Predefined Roles**: The system uses predefined roles (e.g., `ADMIN`, `MEMBER`, etc.) managed as an enum for consistency and security. These roles are seeded into the database and referenced throughout the application for access control and assignment.
 
-## 🧱 Tech Stack
+## Project Structure
 
-- **Backend**: Python 3.11, Flask
-- **Database**: PostgreSQL
-- **Authentication**: JWT (Flask-JWT-Extended)
-- **Testing**: Postman
-- **Architecture**: OOP + Layered (MVC inspired)
+```
+app/
+  __init__.py            # App factory, blueprint registration
+  db.py                  # Database setup
+  models/                # SQLAlchemy models (User, Role, Organization, Invitation, UserOrgRole)
+  repositories/          # CRUD logic for each model
+  services/              # Business logic for each entity
+  routes/                # API endpoints for each entity
+config/
+  config.py              # App configuration
+run.py                   # App entry point
+```
 
-## 🗂️ Project Structure
+## API Endpoints
 
-identity_api/
-├── app/
-│ ├── models/ # SQLAlchemy models (User, Role, Org, etc.)
-│ ├── repositories/ # DB operations for each model
-│ ├── services/ # Business logic
-│ ├── controllers/ # Route definitions and handlers
-│ ├── init.py # App factory
-├── config/
-│ └── config.py # Environment-based config
-├── run.py # Entry point
-├── requirements.txt # Dependencies
+- `/api/auth/register` - Register a new user
+- `/api/auth/login` - Login and receive JWT token
+- `/api/organizations/` - CRUD for organizations
+- `/api/roles/` - CRUD for roles
+- `/api/user-org-roles/` - Assign and manage user roles in organizations
+- `/api/invitations/` - Send, accept, and manage invitations
 
-markdown
-Copy code
+All endpoints (except registration/login) require JWT authentication.
 
-## ✅ Planned Workflow
+## Roles
 
-### 1. Project Setup
-- Create virtual environment
-- Install dependencies
-- Setup base folder structure
-- Create app factory (`create_app`)
+- Predefined roles are available (e.g., `ADMIN`, `MEMBER`, etc.) and managed as an enum in the codebase.
+- Roles are assigned to users within organizations and included in JWT tokens for authorization.
+- You can extend or customize roles as needed in the enum and seed logic.
 
-### 2. Database Modeling
-- User, Role, Organization, Invitation, UserOrgRole pivot model
+## Getting Started
 
-### 3. Repository Layer
-- CRUD operations encapsulated per entity
+1. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. **Configure environment**
+   - Copy `.env.example` to `.env` and set your environment variables.
+3. **Run the app**
+   ```bash
+   python run.py
+   ```
 
-### 4. Service Layer
-- Business logic:
-  - Register/Login
-  - Invite flow
-  - Assign roles
+## Usage
 
-### 5. Controller Layer
-- Flask Blueprints:
-  - `/auth` – Login, Register, Token refresh
-  - `/org` – Create org, assign roles
-  - `/invite` – Send and accept invitation
+- Use Postman or similar tools to interact with the API.
+- Register/login to obtain a JWT token.
+- Use the token as a Bearer token for authenticated requests.
 
-### 6. JWT Integration
-- Protect endpoints
-- Role-based access enforcement
+## Extending
 
-### 7. Testing
-- Postman collections
-- Workflow testing (invite → join → assign)
+- Add permissions, audit logs, or custom business logic as needed.
+- Integrate with external identity providers if required.
 
-## 📦 Installation
+## License
 
-```bash
-git clone https://github.com/your-username/identity-api.git
-cd identity-api
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-pip install -r requirements.txt
+MIT
