@@ -4,11 +4,15 @@ from flask_jwt_extended import create_access_token
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
 from app import db
+from app.services.user_org_role_service import UserOrgRoleService
+from app.repositories.user_org_role_repository import UserOrganizationRoleRepository
+from app.models.role import Role
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 user_repo = UserRepository()
 user_service = UserService(user_repo)
+user_org_role_service = UserOrgRoleService(UserOrganizationRoleRepository())
 
 
 @auth_bp.route('/register', methods=['POST'])
@@ -38,10 +42,13 @@ def login():
 
     user = user_service.get_user_by_email(email)
     if user and check_password_hash(user.password_hash, password):
-        access_token = create_access_token(identity=str(user.id))
+        # Fetch all roles for the user
+        user_org_roles = UserOrganizationRoleRepository().model.query.filter_by(user_id=user.id).all()
+        roles = [Role.query.get(uor.role_id).name for uor in user_org_roles]
+        access_token = create_access_token(identity=str(user.id), additional_claims={"roles": roles})
         return jsonify({
             'message': 'Login successful',
             'access_token': access_token,
-            'user': {'id': user.id, 'email': user.email}
+            'user': {'id': user.id, 'email': user.email, 'roles': roles}
         })
     return jsonify({'error': 'Invalid credentials'}), 401
