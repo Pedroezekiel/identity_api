@@ -19,3 +19,9 @@ class BaseRepository:
     def delete(self, instance):
         db.session.delete(instance)
         db.session.commit()
+
+    def update(self, instance, **kwargs):
+        for key, value in kwargs.items():
+            setattr(instance, key, value)
+        db.session.commit()
+        return instance
