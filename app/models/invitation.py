@@ -7,7 +7,7 @@ class Invitation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), nullable=False)
     organization_id = db.Column(db.Integer, db.ForeignKey("organizations.id"), nullable=False)
-    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"), nullable=True)
     token = db.Column(db.String(255), unique=True, nullable=False)
     is_accepted = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
